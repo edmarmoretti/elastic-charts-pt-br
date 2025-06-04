@@ -54,6 +54,31 @@ export function renderText(
       ctx.strokeText(text, 0, 0);
     }
     //Edmar Moretti - remove ,00 dos labels internos
+    if (!text.startsWith('R$')) {
+      const suffixes = [
+        { suffix: ',00', replace: '' },
+        { suffix: ',00%', replace: '%' },
+        { suffix: ',00mil', replace: 'mil' },
+        { suffix: ',00mi', replace: 'mi' },
+        { suffix: ',00bi', replace: 'bi' },
+        { suffix: ',00tri', replace: 'tri' },
+        { suffix: ',00 %', replace: ' %' },
+        { suffix: ',00 mil', replace: ' mil' },
+        { suffix: ',00 mi', replace: ' mi' },
+        { suffix: ',00 bi', replace: ' bi' },
+        { suffix: ',00 tri', replace: ' tri' },
+      ];
+
+      for (const { suffix, replace } of suffixes) {
+        if (text.endsWith(suffix)) {
+          text = text.slice(0, -suffix.length) + replace;
+          break;
+        }
+      }
+    }
+    
+    
+    /*
     if(text.substring(text.length-3,text.length) == ",00"){
       text = text.substring(0,text.length-3);
     }
@@ -72,6 +97,7 @@ export function renderText(
     else if(text.substring(text.length-6,text.length) == ",00tri"){
       text = text.substring(0,text.length-5)+"tri";
     }
+      */
     ctx.fillText(text, 0, 0);
   });
 }

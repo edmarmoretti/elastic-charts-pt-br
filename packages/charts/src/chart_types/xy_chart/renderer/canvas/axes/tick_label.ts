@@ -50,6 +50,27 @@ export function renderTickLabel(
   const tickOnTheSide = timeAxisLayerCount > 0 && Number.isFinite(tick.layer);
 
   // Edmar Moretti - remoção do ,00 dos labels dos eixos
+  const suffixes = [
+    { suffix: ',00', replace: '' },
+    { suffix: ',00%', replace: '%' },
+    { suffix: ',00mil', replace: 'mil' },
+    { suffix: ',00mi', replace: 'mi' },
+    { suffix: ',00bi', replace: 'bi' },
+    { suffix: ',00tri', replace: 'tri' },
+    { suffix: ',00 %', replace: ' %' },
+    { suffix: ',00 mil', replace: ' mil' },
+    { suffix: ',00 mi', replace: ' mi' },
+    { suffix: ',00 bi', replace: ' bi' },
+    { suffix: ',00 tri', replace: ' tri' },
+  ];
+
+  for (const { suffix, replace } of suffixes) {
+    if (tick.label.endsWith(suffix)) {
+      tick.label = tick.label.slice(0, -suffix.length) + replace;
+      break;
+    }
+  }  
+  /*
   if(tick.label.substring(tick.label.length-3,tick.label.length) == ",00"){
     tick.label = tick.label.substring(0,tick.label.length-3);
   }
@@ -68,6 +89,7 @@ export function renderTickLabel(
   else if(tick.label.substring(tick.label.length-6,tick.label.length) == ",00tri"){
     tick.label = tick.label.substring(0,tick.label.length-5)+"tri";
   }
+  */
   
   //
   renderText(
