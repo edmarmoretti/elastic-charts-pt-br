@@ -70,8 +70,8 @@ export const LegendListItem: React.FC<LegendItemProps> = (props) => {
   const style: CSSProperties = flatLegend
     ? {}
     : {
-        [isMostlyRTL ? 'marginRight' : 'marginLeft']: LEGEND_HIERARCHY_MARGIN * (depth ?? 0),
-      };
+      [isMostlyRTL ? 'marginRight' : 'marginLeft']: LEGEND_HIERARCHY_MARGIN * (depth ?? 0),
+    };
 
   const onLabelToggle = useCallback(
     (legendItemId: SeriesIdentifier[]) => (negate: boolean) => {
@@ -93,11 +93,12 @@ export const LegendListItem: React.FC<LegendItemProps> = (props) => {
 
   if (isItemHidden) return null;
 
-    //Edmar Moretti - esconde o ícone de cor se se só existir um item na legenda
-    let showSymbol = true;
-    if(totalItems == 1){
-      showSymbol = false;
-    };
+  //Edmar Moretti - esconde o ícone de cor se se só existir um item na . Adiciona a classe textoSemSimbolo
+
+  let showSymbol = true;
+  if (totalItems == 1) {
+    showSymbol = false;
+  };
 
   return (
     <>
@@ -111,8 +112,8 @@ export const LegendListItem: React.FC<LegendItemProps> = (props) => {
       >
         <div className="background" />
         {showSymbol && (
-        <div className="echLegend__colorWrapper">{renderItemColor()}</div>
-      )}
+          <div className="echLegend__colorWrapper">{renderItemColor()}</div>
+        )}
         <ItemLabel
           label={label}
           options={labelOptions}
@@ -121,18 +122,19 @@ export const LegendListItem: React.FC<LegendItemProps> = (props) => {
           isSeriesHidden={isSeriesHidden}
           totalSeriesCount={totalItems}
           hiddenSeriesCount={hiddenItems}
+          showSymbol={showSymbol}
         />
         {!isSeriesHidden
           ? legendValueItems.map((legendValueItem) =>
-              legendValueItem.label !== '' ? (
-                <div key={legendValueItem.label} className="echLegendItem__legendValue">
-                  {legendValueItem.label}
-                </div>
-              ) : null,
-            )
+            legendValueItem.label !== '' ? (
+              <div key={legendValueItem.label} className={`echLegendItem__legendValue ${showSymbol ? '' : 'textoSemSimbolo'}`}>
+                {legendValueItem.label}
+              </div>
+            ) : null,
+          )
           : null}
         {Action && (
-          <div className="echLegendItem__action">
+          <div className={`echLegendItem__legendValue ${showSymbol ? '' : 'textoSemSimbolo'}`}>
             <Action series={seriesIdentifiers} color={color} label={label} />
           </div>
         )}
