@@ -17,7 +17,7 @@ import { HorizontalAlignment, VerticalAlignment } from '../../../../../utils/com
 import type { Dimensions } from '../../../../../utils/dimensions';
 import type { BarGeometry } from '../../../../../utils/geometry';
 import type { BackgroundStyle, TextAlignment, Theme } from '../../../../../utils/themes/theme';
-import { LabelOverflowConstraint } from '../../../utils/specs';
+//import { LabelOverflowConstraint } from '../../../utils/specs';
 import { withPanelTransform } from '../utils/panel_transform';
 
 interface BarValuesProps {
@@ -48,7 +48,7 @@ export function renderBarValues(ctx: CanvasRenderingContext2D, props: BarValuesP
     if (!bar.displayValue) {
       return;
     }
-    const { text, fontSize, fontScale, overflowConstraints } = bar.displayValue;
+    const { text, fontSize, fontScale } = bar.displayValue;
     const shadowSize = getTextBorderSize(fill);
     const { fillColor, shadowColor } = getTextColors(fill, bar.color, background);
     const font: Font = {

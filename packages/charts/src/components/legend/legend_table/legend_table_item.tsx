@@ -88,8 +88,7 @@ export const LegendListItem: React.FC<LegendItemProps> = (props) => {
             onToggle={onLabelToggle(seriesIdentifiers)}
             isSeriesHidden={isSeriesHidden}
             totalSeriesCount={totalItems}
-            hiddenSeriesCount={hiddenItems}
-          />
+            hiddenSeriesCount={hiddenItems} showSymbol={false}          />
         </LegendTableCell>
 
         {legendValueItems.map((l, i) => {
