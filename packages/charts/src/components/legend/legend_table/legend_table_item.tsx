@@ -66,7 +66,7 @@ export const LegendListItem: React.FC<LegendItemProps> = (props) => {
   if (isItemHidden) return null;
 
   const ActionComponent = Action ? <Action series={seriesIdentifiers} color={color} label={label} /> : null;
-
+  //Edmar Moretti - inclusão de showSymbol
   return (
     <>
       <LegendTableRow
@@ -88,6 +88,7 @@ export const LegendListItem: React.FC<LegendItemProps> = (props) => {
             isSeriesHidden={isSeriesHidden}
             totalSeriesCount={totalItems}
             hiddenSeriesCount={hiddenItems}
+            showSymbol={totalItems > 1}
           />
         </LegendTableCell>
 

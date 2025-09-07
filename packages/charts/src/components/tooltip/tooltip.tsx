@@ -173,6 +173,43 @@ export const TooltipComponent = <D extends BaseDatum = Datum, SI extends SeriesI
   const isMostlyRTL = hasMostlyRTLItems(info?.values?.map?.(({ label }) => label) ?? []);
   const textDirectionality = isMostlyRTL ? 'rtl' : 'ltr';
 
+  function formataCasasDecimais(text: string) {
+    if (!text.startsWith('R$')) {
+      const suffixes = [
+        { suffix: ',00', replace: '' },
+        { suffix: ',00%', replace: '%' },
+        { suffix: ',00mil', replace: 'mil' },
+        { suffix: ',00mi', replace: 'mi' },
+        { suffix: ',00bi', replace: 'bi' },
+        { suffix: ',00tri', replace: 'tri' },
+        { suffix: ',00 %', replace: ' %' },
+        { suffix: ',00 mil', replace: ' mil' },
+        { suffix: ',00 mi', replace: ' mi' },
+        { suffix: ',00 bi', replace: ' bi' },
+        { suffix: ',00 tri', replace: ' tri' },
+        { suffix: ',000', replace: '' },
+        { suffix: ',000%', replace: '%' },
+        { suffix: ',000mil', replace: 'mil' },
+        { suffix: ',000mi', replace: 'mi' },
+        { suffix: ',000bi', replace: 'bi' },
+        { suffix: ',000tri', replace: 'tri' },
+        { suffix: ',000 %', replace: ' %' },
+        { suffix: ',000 mil', replace: ' mil' },
+        { suffix: ',000 mi', replace: ' mi' },
+        { suffix: ',000 bi', replace: ' bi' },
+        { suffix: ',000 tri', replace: ' tri' },
+      ];
+
+      for (const { suffix, replace } of suffixes) {
+        if (text.endsWith(suffix)) {
+          text = text.slice(0, -suffix.length) + replace;
+          break;
+        }
+      }
+    }
+    return text;
+  };
+
   const columns: TooltipTableColumn<D, SI>[] = [
     {
       id: 'color',
@@ -197,26 +234,7 @@ export const TooltipComponent = <D extends BaseDatum = Datum, SI extends SeriesI
       type: 'custom',
       cell: ({ formattedValue }) => (
         <span className="echTooltip__value" dir="ltr">
-          {
-            //Edmar Moretti remove ,00 do tooltip
-            //formattedValue
-            formattedValue.substring(formattedValue.length-3,formattedValue.length) == ",00" ?
-            formattedValue.substring(0,formattedValue.length-3) : (
-              formattedValue.substring(formattedValue.length-4,formattedValue.length) == ",00%" ?
-              formattedValue = formattedValue.substring(0,formattedValue.length-4)+"%" : (
-                formattedValue.substring(formattedValue.length-6,formattedValue.length) == ",00mil" ? 
-                formattedValue = formattedValue.substring(0,formattedValue.length-6)+"mil" : (
-                  formattedValue.substring(formattedValue.length-5,formattedValue.length) == ",00mi" ?
-                  formattedValue = formattedValue.substring(0,formattedValue.length-5)+"mi" : (
-                    formattedValue.substring(formattedValue.length-5,formattedValue.length) == ",00bi" ?
-                    formattedValue = formattedValue.substring(0,formattedValue.length-5)+"bi" : (
-                      formattedValue.substring(formattedValue.length-6,formattedValue.length) == ",00tri" ?
-                      formattedValue = formattedValue.substring(0,formattedValue.length-5)+"tri" : formattedValue)))))
-
-             //formattedValue.substring(0,2) !== "R$" && formattedValue.substring(formattedValue.length - 3, formattedValue.length) == ",00" ?
-             //formattedValue.substring(0, formattedValue.length - 3) : 
-             //( formattedValue.substring(0,2) == "R$" && formattedValue.split(',')[1] == undefined ? formattedValue + ',00': formattedValue)
-          }
+          {formataCasasDecimais(formattedValue)}
         </span>
       ),
       // truncation is fine for values  due to the grid configuration: label-value  as auto-auto.
@@ -391,31 +409,31 @@ const mapStateToPropsBasic = (state: GlobalChartState): BasicTooltipProps => {
   return getInternalIsInitializedSelector(state) !== InitStatus.Initialized
     ? HIDDEN_TOOLTIP_PROPS
     : {
-        tooltip,
-        isExternal,
-        isBrushing: false,
-        zIndex: state.zIndex,
-        settings: getTooltipSettings(state),
-        tooltipTheme,
-        rotation: getChartRotationSelector(state),
-        chartId: state.chartId,
-        backgroundColor,
-      };
+      tooltip,
+      isExternal,
+      isBrushing: false,
+      zIndex: state.zIndex,
+      settings: getTooltipSettings(state),
+      tooltipTheme,
+      rotation: getChartRotationSelector(state),
+      chartId: state.chartId,
+      backgroundColor,
+    };
 };
 
 const mapStateToProps = (state: GlobalChartState): TooltipStateProps =>
   getInternalIsInitializedSelector(state) !== InitStatus.Initialized
     ? HIDDEN_TOOLTIP_PROPS
     : {
-        ...mapStateToPropsBasic(state),
-        visible: getInternalIsTooltipVisibleSelector(state).visible,
-        position: getInternalTooltipAnchorPositionSelector(state),
-        info: getInternalTooltipInfoSelector(state),
-        pinned: state.interactions.tooltip.pinned,
-        selected: getTooltipSelectedItems(state),
-        canPinTooltip: isPinnableTooltip(state),
-        isBrushing: isBrushingSelector(state),
-      };
+      ...mapStateToPropsBasic(state),
+      visible: getInternalIsTooltipVisibleSelector(state).visible,
+      position: getInternalTooltipAnchorPositionSelector(state),
+      info: getInternalTooltipInfoSelector(state),
+      pinned: state.interactions.tooltip.pinned,
+      selected: getTooltipSelectedItems(state),
+      canPinTooltip: isPinnableTooltip(state),
+      isBrushing: isBrushingSelector(state),
+    };
 
 /** @internal */
 export const Tooltip = memo(connect(mapStateToProps, mapDispatchToProps)(TooltipComponent));
