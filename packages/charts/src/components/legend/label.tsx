@@ -21,6 +21,7 @@ interface LabelProps {
   options: LegendLabelOptions;
   hiddenSeriesCount: number;
   totalSeriesCount: number;
+  showSymbol: boolean;
 }
 
 const isAppleDevice = typeof window !== 'undefined' && /Mac|iPhone|iPad/.test(window.navigator.userAgent);
@@ -75,6 +76,7 @@ export function Label({
   options,
   hiddenSeriesCount,
   totalSeriesCount,
+  showSymbol,
 }: LabelProps) {
   const { className, dir, clampStyles } = getSharedProps(label, options, !!onToggle);
 
@@ -98,7 +100,7 @@ export function Label({
       role="button"
       tabIndex={0}
       dir={dir}
-      className={className}
+      className={`${showSymbol ? className : className + ' textoSemSimbolo'}`}
       title={`${title}\n${getInteractivityTitle(!isSeriesHidden, hiddenSeriesCount, totalSeriesCount)}`}
       onClick={onClick}
       onKeyDown={onKeyDown}
@@ -109,7 +111,7 @@ export function Label({
       {label}
     </div>
   ) : (
-    <div dir={dir} className={className} title={label} style={clampStyles}>
+    <div dir={dir} className={`${showSymbol ? className : className + ' textoSemSimbolo'}`} title={label} style={clampStyles}>
       {label}
     </div>
   );

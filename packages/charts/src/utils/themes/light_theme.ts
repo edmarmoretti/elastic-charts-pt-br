@@ -22,7 +22,7 @@ import { Colors } from '../../common/colors';
 import { TAU } from '../../common/constants';
 import { DEFAULT_FONT_FAMILY } from '../../common/default_theme_attributes';
 import { ColorVariant } from '../common';
-
+//Edmar Moretti - ajustes nos estilos dos componentes dos gráficos
 /** @public */
 export const LIGHT_THEME: Theme = {
   chartPaddings: DEFAULT_CHART_PADDING,
@@ -190,7 +190,7 @@ export const LIGHT_THEME: Theme = {
     axisLine: {
       visible: true,
       stroke: LIGHT_BORDER_COLORS.borderBaseSubdued,
-      strokeWidth: 1,
+      strokeWidth: 1.5,
     },
     tickLabel: {
       visible: true,
@@ -222,14 +222,14 @@ export const LIGHT_THEME: Theme = {
         visible: true,
         stroke: LIGHT_BORDER_COLORS.borderBaseSubdued,
         strokeWidth: 1,
-        opacity: 1,
+        opacity: 0.5,
         dash: [0, 0],
       },
       vertical: {
         visible: true,
         stroke: LIGHT_BORDER_COLORS.borderBaseSubdued,
         strokeWidth: 1,
-        opacity: 1,
+        opacity: 0.5,
         dash: [0, 0],
       },
     },
@@ -244,7 +244,7 @@ export const LIGHT_THEME: Theme = {
     spacingBuffer: 10,
     margin: 0,
     labelOptions: {
-      maxLines: 1,
+      maxLines: 2,
     },
   },
   crosshair: {
