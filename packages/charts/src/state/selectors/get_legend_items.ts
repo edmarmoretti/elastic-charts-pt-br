@@ -8,7 +8,8 @@
 
 import { getInternalChartStateSelector } from './get_internal_chart_state';
 import type { LegendItem } from '../../common/legend';
-import { EMPTY_LEGEND_LIST } from '../../common/legend';
+// import { EMPTY_LEGEND_LIST } from '../../common/legend';
+const EMPTY_LEGEND_LIST: LegendItem[] = [];
 import type { GlobalChartState } from '../chart_state';
 import { createCustomCachedSelector } from '../create_selector';
 

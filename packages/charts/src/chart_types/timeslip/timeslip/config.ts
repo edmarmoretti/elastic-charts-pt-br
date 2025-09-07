@@ -86,10 +86,11 @@ export interface TimeslipConfig extends TimeslipTheme, RasterConfig {
   yTickGap: number;
 }
 
+//Edmar Moretti - alteração do locale para pt-br
 /** @internal */
 export const rasterConfig: RasterConfig = {
   minimumTickPixelDistance: MINIMUM_TICK_PIXEL_DISTANCE,
-  locale: 'en-US',
+  locale: 'pt-br',
   dow: 1,
 };
 
