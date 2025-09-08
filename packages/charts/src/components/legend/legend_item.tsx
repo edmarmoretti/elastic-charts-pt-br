@@ -94,7 +94,7 @@ export const LegendListItem: React.FC<LegendItemProps> = (props) => {
   const { renderItemColor, renderColorPickerPopup } = useLegendColorPicker(props);
 
   if (isItemHidden) return null;
-
+  //Edmar Moretti - não mostra o símbolo da legenda quando só tem uma série
   return (
     <>
       <li
@@ -106,7 +106,7 @@ export const LegendListItem: React.FC<LegendItemProps> = (props) => {
         data-ech-series-name={label}
       >
         <div className="background" />
-        <div className="echLegend__colorWrapper">{renderItemColor()}</div>
+        <div className="echLegend__colorWrapper">{totalItems > 1 ? renderItemColor() : ''}</div>
         <ItemLabel
           label={label}
           options={labelOptions}
