@@ -177,7 +177,7 @@ if(typeof value == 'string'){
         <div>
           {visibility.extra && (
             <p className="echMetricText__extra" style={{ fontSize: sizes.extraFontSize }}>
-              {extra}
+              {renderWithProps(extra, { fontSize: sizes.extraFontSize, color: highContrastTextColor })}
             </p>
           )}
         </div>
