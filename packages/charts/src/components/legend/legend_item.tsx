@@ -94,7 +94,14 @@ export const LegendListItem: React.FC<LegendItemProps> = (props) => {
   const { renderItemColor, renderColorPickerPopup } = useLegendColorPicker(props);
 
   if (isItemHidden) return null;
-  //Edmar Moretti - não mostra o símbolo da legenda quando só tem uma série
+
+  //Edmar Moretti - esconde o ícone de cor se se só existir um item na . Adiciona a classe textoSemSimbolo
+
+  let showSymbol = true;
+  if (totalItems == 1) {
+    showSymbol = false;
+  };
+
   return (
     <>
       <li
@@ -106,7 +113,9 @@ export const LegendListItem: React.FC<LegendItemProps> = (props) => {
         data-ech-series-name={label}
       >
         <div className="background" />
-        <div className="echLegend__colorWrapper">{totalItems > 1 ? renderItemColor() : ''}</div>
+        {showSymbol && (
+          <div className="echLegend__colorWrapper">{renderItemColor()}</div>
+        )}
         <ItemLabel
           label={label}
           options={labelOptions}
@@ -114,18 +123,20 @@ export const LegendListItem: React.FC<LegendItemProps> = (props) => {
           onToggle={onLabelToggle(seriesIdentifiers)}
           isSeriesHidden={isSeriesHidden}
           totalSeriesCount={totalItems}
-          hiddenSeriesCount={hiddenItems} showSymbol={false}        />
+          hiddenSeriesCount={hiddenItems}
+          showSymbol={showSymbol}
+        />
         {!isSeriesHidden
           ? legendValueItems.map((legendValueItem) =>
-              legendValueItem.label !== '' ? (
-                <div key={legendValueItem.label} className="echLegendItem__legendValue">
-                  {legendValueItem.label}
-                </div>
-              ) : null,
-            )
+            legendValueItem.label !== '' ? (
+              <div key={legendValueItem.label} className={`echLegendItem__legendValue ${showSymbol ? '' : 'textoSemSimbolo'}`}>
+                {legendValueItem.label}
+              </div>
+            ) : null,
+          )
           : null}
         {Action && (
-          <div className="echLegendItem__action">
+          <div className={`echLegendItem__legendValue ${showSymbol ? '' : 'textoSemSimbolo'}`}>
             <Action series={seriesIdentifiers} color={color} label={label} />
           </div>
         )}
