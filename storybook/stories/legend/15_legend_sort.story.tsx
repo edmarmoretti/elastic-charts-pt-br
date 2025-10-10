@@ -18,18 +18,18 @@ import { useBaseTheme } from '../../use_base_theme';
 
 export const Example: ChartsStory = (_, { title, description }) => {
   const data: Array<[number, string, number]> = [
-    [2010, 'Apple', 10],
-    [2010, 'Orange', 6],
-    [2010, 'Banana', 4],
-    [2011, 'Apple', 9],
-    [2011, 'Orange', 6],
-    [2011, 'Banana', 2],
-    [2012, 'Apple', 7],
-    [2012, 'Orange', 3],
-    [2012, 'Banana', 3],
-    [2013, 'Apple', 12],
-    [2013, 'Orange', 10],
-    [2013, 'Banana', 5],
+    [2010, 'Fruta › x › Apple', 10],
+    [2010, 'Fruta › x › Orange', 6],
+    [2010, 'Fruta › x › Banana', 4],
+    [2011, 'Fruta › x › Apple', 9],
+    [2011, 'Fruta › x › Orange', 6],
+    [2011, 'Fruta › x › Banana', 2],
+    [2012, 'Fruta › x › Apple', 7],
+    [2012, 'Fruta › x › Orange', 3],
+    [2012, 'Fruta › x › Banana', 3],
+    [2013, 'Fruta › x › Apple', 12],
+    [2013, 'Fruta › x › Orange', 10],
+    [2013, 'Fruta › x › Banana', 5],
   ];
   // the sorting value can be part of the dataset or externally defined
   const categoricalIndex: Array<unknown> = ['Apple', 'Orange', 'Banana'];
@@ -50,8 +50,13 @@ export const Example: ChartsStory = (_, { title, description }) => {
   };
   return (
     <Chart title={title} description={description}>
-      <Settings showLegend baseTheme={useBaseTheme()} legendSort={defaultSort ? undefined : legendSort} />
-      <Axis id="bottom" position={Position.Bottom} title="[2010-2013] harvest" showOverlappingTicks />
+      <Settings 
+        showLegend
+        legendPosition={Position.Bottom}
+        baseTheme={useBaseTheme()} 
+        legendSort={defaultSort ? undefined : legendSort}
+      />
+      <Axis id="bottom" position={Position.Bottom} showOverlappingTicks />
       <Axis id="left2" position={Position.Left} ticks={4} tickFormat={(d) => `${d} tons`} />
 
       <BarSeries

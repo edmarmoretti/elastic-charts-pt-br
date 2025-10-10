@@ -93,6 +93,7 @@ export function Label({
 
   const title = options.maxLines > 0 ? label : ''; // full text already visible
 
+  
   return isToggleable ? (
     // This div is required to allow multiline text truncation, all ARIA requirements are still met
     // https://stackoverflow.com/questions/68673034/webkit-line-clamp-does-not-apply-to-buttons

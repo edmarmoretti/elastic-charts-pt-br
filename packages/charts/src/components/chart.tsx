@@ -36,6 +36,8 @@ import { getChartSize, getFixedChartSize } from '../utils/chart_size';
 import { LayoutDirection } from '../utils/common';
 import { deepEqual } from '../utils/fast_deep_equal';
 import { LIGHT_THEME } from '../utils/themes/light_theme';
+//import { getLegendConfigSelector } from '../state/selectors/get_legend_config_selector';
+//import { getLegendItemExtraValues } from '../chart_types/xy_chart/tooltip/tooltip';
 
 /** @public */
 export interface ChartProps {
@@ -171,6 +173,8 @@ export class Chart extends React.Component<ChartProps, ChartState> {
     const chartContentClassNames = classNames('echChartContent', className, {
       'echChartContent--column': this.state.legendDirection === LayoutDirection.Horizontal,
     });
+    //Edmar Moretti - incluindo título da legenda no lugar do título do gráfico
+    //let legendTitle = getLegendConfigSelector(this.chartStore.getState()).legendTitle;
 
     return (
       <Provider store={this.chartStore}>
@@ -211,7 +215,8 @@ function Titles({
     paddingLeft,
     paddingRight,
   };
-
+  //Edmar Moretti - altera h3 por div para o título da legenda
+  //tituloDaTabela vem do plugin sageIntegration
   return (
     <div className="echChart__titles">
       {title && (
