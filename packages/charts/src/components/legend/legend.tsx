@@ -144,9 +144,34 @@ function LegendComponent(props: LegendStateProps & LegendDispatchProps) {
   const positionStyle = legendPositionStyle(config, size, chartDimensions, containerDimensions);
   const isTableView = shouldDisplayTable(itemProps.legendValues);
 
+
+  //Edmar Moretti - captura o título da legenda se o início dos itens forem iguais
+  if (config.legendTitle == undefined) {
+    items.forEach(item => {
+      item.label = item.label.replace(' - ', ' › ');
+    });
+    if (items[0]?.label.includes(' › ')) {
+      let teste = items[0].label.split(' › ').slice(0, -1).join(' › ');
+      items.forEach(item => {
+        if (teste == item.label.split(' › ').slice(0, -1).join(' › ')) {
+          config.legendTitle = teste;
+        } else {
+          config.legendTitle = '';
+        }
+      });
+    }
+    if (config.legendTitle != '') {
+      // remove o título comum do início dos itens
+      items.forEach(item => {
+        item.label = item.label.replace(config.legendTitle + ' › ', '');
+      });
+    }
+  }
+
   return (
     <div className={legendClasses} style={positionStyle} dir={isMostlyRTL ? 'rtl' : 'ltr'}>
       {config.customLegend ? (
+        //Edmar Moretti - ajusta a largura do container para o tamanho da série se definido
         <div style={containerStyle}>
           <CustomLegend
             component={config.customLegend}
@@ -164,11 +189,21 @@ function LegendComponent(props: LegendStateProps & LegendDispatchProps) {
         </div>
       ) : isTableView ? (
         <div style={containerStyle} className="echLegendTable__container">
+            {config.legendTitle && (
+              <li className="echLegendList__title" style={{ textAlign: positionConfig.hAlign }}>
+                {config.legendTitle}:
+              </li>
+            )}
           <LegendTable items={items} {...itemProps} seriesWidth={size.seriesWidth} />
         </div>
       ) : (
         <div style={containerStyle} className="echLegendListContainer">
           <ul style={listStyle} className="echLegendList">
+            {config.legendTitle && (
+              <li className="echLegendList__title" style={{ textAlign: positionConfig.hAlign }}>
+                {config.legendTitle}:
+              </li>
+            )}
             {items.map((item, index) => (
               <LegendListItem key={`${index}`} item={item} {...itemProps} />
             ))}

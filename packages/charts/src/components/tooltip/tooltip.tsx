@@ -179,6 +179,43 @@ export const TooltipComponent = <D extends BaseDatum = Datum, SI extends SeriesI
   const isMostlyRTL = hasMostlyRTLItems(info?.values?.map?.(({ label }) => label) ?? []);
   const textDirectionality = isMostlyRTL ? 'rtl' : 'ltr';
 
+  function formataCasasDecimais(text: string) {
+    if (!text.startsWith('R$')) {
+      const suffixes = [
+        { suffix: ',00', replace: '' },
+        { suffix: ',00%', replace: '%' },
+        { suffix: ',00mil', replace: 'mil' },
+        { suffix: ',00mi', replace: 'mi' },
+        { suffix: ',00bi', replace: 'bi' },
+        { suffix: ',00tri', replace: 'tri' },
+        { suffix: ',00 %', replace: ' %' },
+        { suffix: ',00 mil', replace: ' mil' },
+        { suffix: ',00 mi', replace: ' mi' },
+        { suffix: ',00 bi', replace: ' bi' },
+        { suffix: ',00 tri', replace: ' tri' },
+        { suffix: ',000', replace: '' },
+        { suffix: ',000%', replace: '%' },
+        { suffix: ',000mil', replace: 'mil' },
+        { suffix: ',000mi', replace: 'mi' },
+        { suffix: ',000bi', replace: 'bi' },
+        { suffix: ',000tri', replace: 'tri' },
+        { suffix: ',000 %', replace: ' %' },
+        { suffix: ',000 mil', replace: ' mil' },
+        { suffix: ',000 mi', replace: ' mi' },
+        { suffix: ',000 bi', replace: ' bi' },
+        { suffix: ',000 tri', replace: ' tri' },
+      ];
+
+      for (const { suffix, replace } of suffixes) {
+        if (text.endsWith(suffix)) {
+          text = text.slice(0, -suffix.length) + replace;
+          break;
+        }
+      }
+    }
+    return text;
+  };
+
   const columns: TooltipTableColumn<D, SI>[] = [
     {
       id: 'color',
@@ -203,7 +240,7 @@ export const TooltipComponent = <D extends BaseDatum = Datum, SI extends SeriesI
       type: 'custom',
       cell: ({ formattedValue }) => (
         <span className="echTooltip__value" dir="ltr">
-          {formattedValue}
+          {formataCasasDecimais(formattedValue)}
         </span>
       ),
       // truncation is fine for values  due to the grid configuration: label-value  as auto-auto.

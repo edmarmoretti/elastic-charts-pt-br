@@ -26,10 +26,11 @@ export function niceTimeFormatter(domain: [number, number]): TickFormatter {
   return timeFormatter(format);
 }
 
+//Edmar Moretti - tradução da forma de apresentação de datas
 /** @public */
 export function niceTimeFormatByDay(days: number) {
-  if (days > 30) return 'YYYY-MM-DD';
-  if (days > 7) return 'MMMM DD';
-  if (days > 1) return 'MM-DD HH:mm';
+  if (days > 30) return 'DD/MM/YYYY';
+  if (days > 7) return 'DD/MMMM';
+  if (days > 1) return 'DD/MM HH:mm';
   return 'HH:mm:ss';
 }

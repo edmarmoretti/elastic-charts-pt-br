@@ -94,20 +94,21 @@ export type LegendItemExtraValues = Map<LegendItemChildId, LegendItemValue>;
 /** @internal */
 export const shouldDisplayTable = (legendValues: LegendValue[]) =>
   legendValues.some((v) => v !== LegendValue.CurrentAndLastValue && v !== LegendValue.Value);
+//Edmar Moretti - tradução dos textos das métricas que vão na legenda do gráfico
 /**
  * todo: i18n
  * @internal
  */
 export const legendValueTitlesMap = {
-  [LegendValue.CurrentAndLastValue]: 'Value',
-  [LegendValue.Value]: 'Value',
-  [LegendValue.Percent]: 'Percent',
-  [LegendValue.LastValue]: 'Last',
-  [LegendValue.LastNonNullValue]: 'Last non-null',
-  [LegendValue.FirstValue]: 'First',
-  [LegendValue.FirstNonNullValue]: 'First non-null',
-  [LegendValue.Average]: 'Avg',
-  [LegendValue.Median]: 'Median',
+  [LegendValue.CurrentAndLastValue]: 'Valor',
+  [LegendValue.Value]: 'Valor',
+  [LegendValue.Percent]: 'Percentual',
+  [LegendValue.LastValue]: 'Último',
+  [LegendValue.LastNonNullValue]: 'Último não-nulo',
+  [LegendValue.FirstValue]: 'Primeiro',
+  [LegendValue.FirstNonNullValue]: 'Primeiro não-nulo',
+  [LegendValue.Average]: 'Média',
+  [LegendValue.Median]: 'Mediana',
   [LegendValue.Min]: 'Min',
   [LegendValue.Max]: 'Max',
   [LegendValue.Total]: 'Total',

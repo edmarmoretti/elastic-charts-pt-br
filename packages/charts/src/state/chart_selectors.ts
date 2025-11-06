@@ -14,7 +14,7 @@ import type { TooltipVisibility } from './tooltip_visibility';
 import type { DebugState } from './types';
 import { DEFAULT_CSS_CURSOR } from '../common/constants';
 import type { LegendItem, LegendItemExtraValues } from '../common/legend';
-import { EMPTY_LEGEND_LIST, EMPTY_LEGEND_ITEM_EXTRA_VALUES } from '../common/legend';
+// import { EMPTY_LEGEND_ITEM_EXTRA_VALUES } from '../common/legend';
 import type { SmallMultiplesSeriesDomains } from '../common/panel_utils';
 import type { SeriesKey } from '../common/series_id';
 import type { AnchorPosition } from '../components/portal/types';
@@ -169,9 +169,9 @@ export const createChartSelectorsFactory =
       isBrushAvailable: () => false,
       isBrushing: () => false,
       isChartEmpty: () => true,
-      getLegendItems: () => EMPTY_LEGEND_LIST,
+      getLegendItems: () => [],
       getLegendItemsLabels: () => EMPTY_LEGEND_ITEM_LIST,
-      getLegendExtraValues: () => EMPTY_LEGEND_ITEM_EXTRA_VALUES,
+      getLegendExtraValues: () => new Map<SeriesKey, LegendItemExtraValues>(),
       getPointerCursor: () => DEFAULT_CSS_CURSOR,
       isTooltipVisible: () => ({
         visible: false,
