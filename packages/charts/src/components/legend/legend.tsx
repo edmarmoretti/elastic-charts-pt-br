@@ -148,7 +148,7 @@ function LegendComponent(props: LegendStateProps & LegendDispatchProps) {
   //Edmar Moretti - captura o título da legenda se o início dos itens forem iguais
   if (config.legendTitle == undefined) {
     items.forEach(item => {
-      item.label = item.label.replace(' - ', ' › ');
+      //item.label = item.label.replace(' - ', ' › ');
     });
     if (items[0]?.label.includes(' › ')) {
       let teste = items[0].label.split(' › ').slice(0, -1).join(' › ');
