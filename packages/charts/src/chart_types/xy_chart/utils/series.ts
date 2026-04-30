@@ -31,7 +31,7 @@ import { groupSeriesByYGroup, isStackedSpec } from '../domains/y_domain';
 import { X_SCALE_DEFAULT } from '../scales/scale_defaults';
 
 /** @internal */
-export const SERIES_DELIMITER = ' - ';
+export const SERIES_DELIMITER = ' | ';
 
 /** @public */
 export interface FilledValues {

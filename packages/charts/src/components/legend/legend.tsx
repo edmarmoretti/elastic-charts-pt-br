@@ -21,6 +21,8 @@ import { getLegendStyle, getLegendListStyle } from './style_utils';
 import type { LegendItem, LegendItemExtraValues } from '../../common/legend';
 import { shouldDisplayTable } from '../../common/legend';
 import type { SeriesIdentifier } from '../../common/series_id';
+//Edmar Moretti - inclusão do delimitador de séries default
+import { SERIES_DELIMITER } from '../../chart_types/xy_chart/utils/series';
 import type { LegendSpec } from '../../specs';
 import { DEFAULT_LEGEND_CONFIG } from '../../specs';
 import { clearTemporaryColors, setTemporaryColor, setPersistedColor } from '../../state/actions/colors';
@@ -148,7 +150,8 @@ function LegendComponent(props: LegendStateProps & LegendDispatchProps) {
   //Edmar Moretti - captura o título da legenda se o início dos itens forem iguais
   if (config.legendTitle == undefined) {
     items.forEach(item => {
-      //item.label = item.label.replace(' - ', ' › ');
+      //permite quebrar linha na legenda quando o gráfico possuir muitas séries
+      item.label = item.label.replace(SERIES_DELIMITER, ' › ');
     });
     if (items[0]?.label.includes(' › ')) {
       let teste = items[0].label.split(' › ').slice(0, -1).join(' › ');
