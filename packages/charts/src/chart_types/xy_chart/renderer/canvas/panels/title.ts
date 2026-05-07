@@ -15,13 +15,17 @@ import { innerPad, outerPad } from '../../../../../utils/dimensions';
 import type { Point } from '../../../../../utils/point';
 import { wrapText } from '../../../../../utils/text/wrap';
 import { isHorizontalAxis } from '../../../utils/axis_type_utils';
+import type { AxisTick } from '../../../utils/axis_utils';
 import { getAllAxisLayersGirth, getTitleDimension, shouldShowTicks } from '../../../utils/axis_utils';
 import type { AxisProps } from '../axes/axis_props';
 
-type PanelTitleProps = Pick<
-  AxisProps,
-  'panelTitle' | 'axisSpec' | 'axisStyle' | 'size' | 'dimension' | 'debug' | 'multilayerTimeAxis'
->;
+type PanelTitleProps = Omit<
+  Pick<
+    AxisProps,
+    'panelTitle' | 'axisSpec' | 'axisStyle' | 'size' | 'dimension' | 'debug' | 'multilayerTimeAxis' | 'ticks'
+  >,
+  'ticks'
+> & { ticks?: AxisTick[] };
 type TitleProps = PanelTitleProps & { anchorPoint: Point };
 
 const titleFontDefaults: Omit<TextFont, 'fontFamily' | 'textColor' | 'fontSize'> = {
@@ -45,11 +49,13 @@ export function renderTitle(
     debug,
     anchorPoint,
     multilayerTimeAxis,
+    ticks,
   }: TitleProps,
   locale: string,
 ) {
   const { position, hide: hideAxis, title, timeAxisLayerCount } = axisSpec;
-  const titleToRender = panel ? panelTitle : title;
+  const titleFromAxis = !panel && !title ? ticks?.[0]?.axisTitle : undefined;
+  const titleToRender = panel ? panelTitle : title || titleFromAxis;
   const axisTitleToUse = panel ? axisPanelTitle : axisTitle;
   if (!titleToRender || !axisTitleToUse.visible) {
     return;

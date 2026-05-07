@@ -5,7 +5,7 @@
  * in compliance with, at your election, the Elastic License 2.0 or the Server
  * Side Public License, v 1.
  */
-
+import { SERIES_DELIMITER } from '../../../../chart_types/xy_chart/utils/series';
 import type { AxisLabelFormatter } from './axis_tick_formatter';
 import type { JoinedAxisData } from './compute_axis_ticks_dimensions';
 import { getJoinedVisibleAxesData, getLabelBox } from './compute_axis_ticks_dimensions';
@@ -68,6 +68,64 @@ function getDirectionFn({ type }: ScaleBand | ScaleContinuous): (label: string) 
     : () => 'ltr'; // always use ltr
 }
 
+const AXIS_LABEL_SEPARATOR = /^(.+?)([\s:—|/\\\-–]*)(.*)$/;
+
+function getCommonAxisTitleAndStrippedLabels(labels: string[]) {
+  const parts = (label: string) => {
+    const match = label.match(AXIS_LABEL_SEPARATOR);
+    if (!match) return null;
+    const [, prefix, separator, rest] = match;
+    if (!prefix || !separator || rest === undefined) return null;
+    return { prefix: prefix.trim(), separator: separator.trim(), rest: rest.trim() };
+  };
+
+  const normalizedLabels = labels.filter((label) => label.length > 0);
+  if (normalizedLabels.length === 0) return undefined;
+
+  const first = parts(normalizedLabels[0]!);
+  if (!first || first.prefix === '') return undefined;
+
+  const { prefix, separator } = first;
+  const strippedLabels: string[] = [];
+
+  for (const label of labels) {
+    const current = parts(label);
+    if (!current || current.prefix !== prefix || current.separator !== separator) {
+      return undefined;
+    }
+    strippedLabels.push(current.rest);
+  }
+
+  return { title: prefix, strippedLabels };
+}
+
+function getAxisLabelFormatterWithCommonAxisTitle(
+  ticks: (number | string)[],
+  labelFormatter: AxisLabelFormatter,
+  axisSpec: AxisSpec,
+): { labelFormatter: AxisLabelFormatter; axisTitle: string | undefined } {
+  if (axisSpec.title) {
+    return { labelFormatter, axisTitle: undefined };
+  }
+
+  const labels = ticks.map((value) => labelFormatter(value));
+  const prefixInfo = getCommonAxisTitleAndStrippedLabels(labels);
+  if (!prefixInfo) {
+    return { labelFormatter, axisTitle: undefined };
+  }
+
+  const { title: axisTitle, strippedLabels } = prefixInfo;
+  const strippedLabelMap = new Map<number | string, string>();
+  ticks.forEach((value, index) => {
+    strippedLabelMap.set(value, strippedLabels[index] ?? '');
+  });
+
+  return {
+    axisTitle,
+    labelFormatter: ((value: unknown) => strippedLabelMap.get(value as number | string) ?? labelFormatter(value as number | string)) as AxisLabelFormatter,
+  };
+}
+
 /** @internal */
 export function generateTicks(
   scale: ScaleBand | ScaleContinuous,
@@ -78,6 +136,7 @@ export function generateTicks(
   detailedLayer: number,
   showGrid: boolean,
   multilayerTimeAxis: boolean,
+  axisTitle?: string,
 ): AxisTick[] {
   const getDirection = getDirectionFn(scale);
   const isContinuous = isContinuousScale(scale);
@@ -101,6 +160,7 @@ export function generateTicks(
       showGrid,
       direction: getDirection(label),
       multilayerTimeAxis,
+      axisTitle,
     });
     return acc;
   }, []);
@@ -120,6 +180,7 @@ function getVisibleTicks(
   adaptiveTickCount: boolean,
   multilayerTimeAxis: boolean = false,
   showGrid = true,
+  axisTitle?: string,
 ): AxisTick[] {
   const isSingleValueScale = scale.domain[0] === scale.domain[1];
   const makeRaster = enableHistogramMode && scale.bandwidth > 0 && !multilayerTimeAxis;
@@ -140,32 +201,34 @@ function getVisibleTicks(
   const allTicks: AxisTick[] =
     makeRaster && isSingleValueScale && typeof firstTickValue === 'number'
       ? [
-          {
-            value: firstTickValue,
-            domainClampedValue: firstTickValue,
-            label: labelFormatter(firstTickValue),
-            position: (scale.scale(firstTickValue) || 0) + offset,
-            domainClampedPosition: (scale.scale(firstTickValue) || 0) + offset,
-            layer: undefined, // no multiple layers with `singleValueScale`s
-            detailedLayer: 0,
-            direction: 'rtl',
-            showGrid,
-            multilayerTimeAxis,
-          },
-          {
-            value: firstTickValue + scale.minInterval,
-            domainClampedValue: firstTickValue + scale.minInterval,
-            label: labelFormatter(firstTickValue + scale.minInterval),
-            position: scale.bandwidth + halfPadding * 2,
-            domainClampedPosition: scale.bandwidth + halfPadding * 2,
-            layer: undefined, // no multiple layers with `singleValueScale`s
-            detailedLayer: 0,
-            direction: 'rtl',
-            showGrid,
-            multilayerTimeAxis,
-          },
-        ]
-      : generateTicks(scale, ticks, offset, labelFormatter, layer, detailedLayer, showGrid, multilayerTimeAxis);
+        {
+          value: firstTickValue,
+          domainClampedValue: firstTickValue,
+          label: labelFormatter(firstTickValue),
+          position: (scale.scale(firstTickValue) || 0) + offset,
+          domainClampedPosition: (scale.scale(firstTickValue) || 0) + offset,
+          layer: undefined, // no multiple layers with `singleValueScale`s
+          detailedLayer: 0,
+          direction: 'rtl',
+          showGrid,
+          multilayerTimeAxis,
+          axisTitle,
+        },
+        {
+          value: firstTickValue + scale.minInterval,
+          domainClampedValue: firstTickValue + scale.minInterval,
+          label: labelFormatter(firstTickValue + scale.minInterval),
+          position: scale.bandwidth + halfPadding * 2,
+          domainClampedPosition: scale.bandwidth + halfPadding * 2,
+          layer: undefined, // no multiple layers with `singleValueScale`s
+          detailedLayer: 0,
+          direction: 'rtl',
+          showGrid,
+          multilayerTimeAxis,
+          axisTitle,
+        },
+      ]
+      : generateTicks(scale, ticks, offset, labelFormatter, layer, detailedLayer, showGrid, multilayerTimeAxis, axisTitle);
 
   const { showOverlappingTicks, showOverlappingLabels, position } = axisSpec;
   const requiredSpace = isVerticalAxis(position) ? labelBox.maxLabelBboxHeight / 2 : labelBox.maxLabelBboxWidth / 2;
@@ -173,21 +236,21 @@ function getVisibleTicks(
   return bypassOverlapCheck
     ? allTicks
     : allTicks
-        .slice()
-        .sort((a: AxisTick, b: AxisTick) => a.position - b.position)
-        .reduce(
-          (prev, tick) => {
-            const tickLabelFits = tick.position >= prev.occupiedSpace + requiredSpace;
-            if (tickLabelFits || showOverlappingTicks) {
-              prev.visibleTicks.push(tickLabelFits ? tick : { ...tick, label: '' });
-              if (tickLabelFits) prev.occupiedSpace = tick.position + requiredSpace;
-            } else if (adaptiveTickCount && !tickLabelFits && !showOverlappingTicks) {
-              prev.visibleTicks.push({ ...tick, label: '' });
-            }
-            return prev;
-          },
-          { visibleTicks: [] as AxisTick[], occupiedSpace: -Infinity },
-        ).visibleTicks;
+      .slice()
+      .sort((a: AxisTick, b: AxisTick) => a.position - b.position)
+      .reduce(
+        (prev, tick) => {
+          const tickLabelFits = tick.position >= prev.occupiedSpace + requiredSpace;
+          if (tickLabelFits || showOverlappingTicks) {
+            prev.visibleTicks.push(tickLabelFits ? tick : { ...tick, label: '' });
+            if (tickLabelFits) prev.occupiedSpace = tick.position + requiredSpace;
+          } else if (adaptiveTickCount && !tickLabelFits && !showOverlappingTicks) {
+            prev.visibleTicks.push({ ...tick, label: '' });
+          }
+          return prev;
+        },
+        { visibleTicks: [] as AxisTick[], occupiedSpace: -Infinity },
+      ).visibleTicks;
 }
 
 function getVisibleTickSet(
@@ -204,6 +267,7 @@ function getVisibleTickSet(
   adaptiveTickCount: boolean,
   multilayerTimeAxis = false,
   showGrid = true,
+  axisTitle?: string,
 ): AxisTick[] {
   const vertical = isVerticalAxis(axisSpec.position);
   const somehowRotated = (vertical && chartRotation === -90) || (!vertical && chartRotation === 180);
@@ -223,6 +287,7 @@ function getVisibleTickSet(
     adaptiveTickCount,
     multilayerTimeAxis,
     showGrid,
+    axisTitle,
   );
 }
 
@@ -273,10 +338,14 @@ function getVisibleTickSets(
           detailedLayer: number,
           labelFormatter: AxisLabelFormatter,
           showGrid = true,
+          axisTitle?: string,
         ): Projection => {
+
           const labelBox = getLabelBox(axesStyle, ticks, labelFormatter, textMeasure, axisSpec, gridLine);
-          return {
-            ticks: getVisibleTickSet(
+          //Edmar Moretti - verifica se o eixo das categorias contém termos repetidos e define o título baseado nisso
+          //console.log(scale);
+          //console.log(axisSpec);
+          const t = getVisibleTickSet(
               scale,
               labelBox,
               { rotation: chartRotation },
@@ -290,7 +359,40 @@ function getVisibleTickSets(
               adaptiveTickCount,
               multilayerTimeAxis,
               showGrid,
-            ),
+              axisTitle,
+            );          
+          
+          if(scale.type === "ordinal" && typeof scale.domain[0] === 'string' && scale.domain[0].includes(SERIES_DELIMITER)){
+            var cabecalho = "";
+            t.forEach(d => {
+              if(typeof d.label === 'string'){
+                d.label = d.label.replace(SERIES_DELIMITER,' › ');
+                d.value = d.label;
+                d.domainClampedValue = d.label;
+                if(cabecalho === ""){
+                  cabecalho = d.label.split(' › ').slice(0, -1).join(' › ');
+                } else {
+                  if(cabecalho != d.label.split(' › ').slice(0, -1).join(' › ')){
+                    cabecalho = '';
+                  }
+                }
+              }
+            });
+            if(cabecalho != ""){
+              t.forEach(d => {
+                if(typeof d.label === 'string'){
+                  d.label = d.label.split(' › ').slice(-1)[0]!;
+                }
+                d.axisTitle = cabecalho;
+              });
+            }
+          }
+
+
+
+
+          return {
+            ticks: t,
             labelBox,
             scale, // tick count driving nicing; nicing drives domain; therefore scale may vary, downstream needs it
           };
@@ -299,15 +401,15 @@ function getVisibleTickSets(
         const getScale = (desiredTickCount: number) =>
           isXAxis
             ? computeXScale({
-                xDomain: { ...xDomain, desiredTickCount },
-                totalBarsInCluster: totalGroupsCount,
-                range,
-                barsPadding,
-                enableHistogramMode,
-                maximumFractionDigits,
-              })
+              xDomain: { ...xDomain, desiredTickCount },
+              totalBarsInCluster: totalGroupsCount,
+              range,
+              barsPadding,
+              enableHistogramMode,
+              maximumFractionDigits,
+            })
             : yDomain &&
-              new ScaleContinuous({ ...yDomain, range }, { ...yDomain, desiredTickCount, maximumFractionDigits });
+            new ScaleContinuous({ ...yDomain, range }, { ...yDomain, desiredTickCount, maximumFractionDigits });
 
         const fillLayer = (maxTickCountForLayer: number) => {
           let fallbackAskedTickCount = 2;
@@ -318,7 +420,12 @@ function getVisibleTickSets(
               const scale = getScale(triedTickCount);
               const actualTickCount = scale?.ticks().length ?? 0;
               if (!scale || actualTickCount === previousActualTickCount || actualTickCount < 2) continue;
-              const raster = getMeasuredTicks(scale, scale.ticks(), undefined, 0, userProvidedLabelFormatter);
+              const { labelFormatter, axisTitle } = getAxisLabelFormatterWithCommonAxisTitle(
+                scale.ticks(),
+                userProvidedLabelFormatter,
+                axisSpec,
+              );
+              const raster = getMeasuredTicks(scale, scale.ticks(), undefined, 0, labelFormatter, true, axisTitle);
               const nonZeroLengthTicks = raster.ticks.filter((tick) => tick.label.length > 0);
               const uniqueLabels = new Set(raster.ticks.map((tick) => tick.label));
               const areLabelsUnique = raster.ticks.length === uniqueLabels.size;
@@ -378,9 +485,13 @@ function getVisibleTickSets(
 
         // todo dry it up
         const scale = getScale(adaptiveTickCount ? fallbackAskedTickCount : maxTickCount);
+        const titleFormatter = scale && getAxisLabelFormatterWithCommonAxisTitle(scale.ticks(), userProvidedLabelFormatter, axisSpec);
+ 
         const lastResortCandidate =
-          scale && getMeasuredTicks(scale, scale.ticks(), undefined, 0, userProvidedLabelFormatter);
+          scale && titleFormatter && getMeasuredTicks(scale, scale.ticks(), undefined, 0, titleFormatter.labelFormatter, true, titleFormatter.axisTitle);
         return lastResortCandidate ? acc.set(axisId, lastResortCandidate) : acc;
+
+
       },
       new Map(),
     );

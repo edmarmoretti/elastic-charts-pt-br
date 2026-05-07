@@ -43,6 +43,7 @@ export interface AxisTick {
   showGrid: boolean;
   direction: TextDirection;
   multilayerTimeAxis: boolean;
+  axisTitle?: string;
 }
 
 /** @internal */

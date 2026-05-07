@@ -148,6 +148,8 @@ function LegendComponent(props: LegendStateProps & LegendDispatchProps) {
 
 
   //Edmar Moretti - captura o título da legenda se o início dos itens forem iguais
+
+  var cabecalhoLegenda: string = '';
   if (config.legendTitle == undefined) {
     items.forEach(item => {
       //permite quebrar linha na legenda quando o gráfico possuir muitas séries
@@ -157,16 +159,17 @@ function LegendComponent(props: LegendStateProps & LegendDispatchProps) {
       let teste = items[0].label.split(' › ').slice(0, -1).join(' › ');
       items.forEach(item => {
         if (teste == item.label.split(' › ').slice(0, -1).join(' › ')) {
-          config.legendTitle = teste;
+          cabecalhoLegenda = teste;
         } else {
-          config.legendTitle = '';
+          cabecalhoLegenda = '';
         }
       });
     }
-    if (config.legendTitle != '') {
+    //console.log('elastic-charts legend.tsx legendTitle: ' + cabecalhoLegenda);
+    if (cabecalhoLegenda != '') {
       // remove o título comum do início dos itens
       items.forEach(item => {
-        item.label = item.label.replace(config.legendTitle + ' › ', '');
+        item.label = item.label.replace(cabecalhoLegenda + ' › ', '');
       });
     }
   }
@@ -192,9 +195,9 @@ function LegendComponent(props: LegendStateProps & LegendDispatchProps) {
         </div>
       ) : isTableView ? (
         <div style={containerStyle} className="echLegendTable__container">
-            {config.legendTitle && (
+            {cabecalhoLegenda != '' && (
               <li className="echLegendList__title" style={{ textAlign: positionConfig.hAlign }}>
-                {config.legendTitle}:
+                {cabecalhoLegenda}:
               </li>
             )}
           <LegendTable items={items} {...itemProps} seriesWidth={size.seriesWidth} />
@@ -202,9 +205,9 @@ function LegendComponent(props: LegendStateProps & LegendDispatchProps) {
       ) : (
         <div style={containerStyle} className="echLegendListContainer">
           <ul style={listStyle} className="echLegendList">
-            {config.legendTitle && (
+            {cabecalhoLegenda != '' && (
               <li className="echLegendList__title" style={{ textAlign: positionConfig.hAlign }}>
-                {config.legendTitle}:
+                {cabecalhoLegenda}:
               </li>
             )}
             {items.map((item, index) => (

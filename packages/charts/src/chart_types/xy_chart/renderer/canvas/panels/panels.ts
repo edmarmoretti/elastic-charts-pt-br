@@ -102,6 +102,7 @@ export function renderPanelSubstrates(ctx: CanvasRenderingContext2D, props: Axes
             axisStyle,
             axisSpec,
             multilayerTimeAxis,
+            ticks,
           },
           locale,
         );

@@ -8,10 +8,10 @@
 
 /** @internal */
 export const BARCHART_1Y0G = [
-  { x: 0, y: 1 },
-  { x: 1, y: 2 },
-  { x: 2, y: 10 },
-  { x: 3, y: 6 },
+  { x: 'a', y: 1 },
+  { x: 'b', y: 2 },
+  { x: 'c', y: 10 },
+  { x: 'd', y: 6 },
 ];
 
 /** @internal */
@@ -59,22 +59,10 @@ export const BARCHART_1Y1G_LINEAR = [
 
 /** @internal */
 export const BARCHART_1Y2G = [
-  { x: 0, g1: 'a', g2: 's', y: 1 },
-  { x: 0, g1: 'a', g2: 'p', y: 1 },
-  { x: 0, g1: 'b', g2: 's', y: 1 },
-  { x: 0, g1: 'b', g2: 'p', y: 1 },
-  { x: 1, g1: 'a', g2: 's', y: 2 },
-  { x: 1, g1: 'a', g2: 'p', y: 2 },
-  { x: 1, g1: 'b', g2: 's', y: 2 },
-  { x: 1, g1: 'b', g2: 'p', y: 2 },
-  { x: 2, g1: 'a', g2: 's', y: 1 },
-  { x: 2, g1: 'a', g2: 'p', y: 2 },
-  { x: 2, g1: 'b', g2: 's', y: 3 },
-  { x: 2, g1: 'b', g2: 'p', y: 4 },
-  { x: 3, g1: 'a', g2: 's', y: 6 },
-  { x: 3, g1: 'a', g2: 'p', y: 6 },
-  { x: 3, g1: 'b', g2: 's', y: 6 },
-  { x: 3, g1: 'b', g2: 'p', y: 6 },
+  { x: 'a | b', g1: 'a', g2: 's', y: 1 },
+  { x: 'a | c', g1: 'a', g2: 'p', y: 1 },
+  { x: 'a | d', g1: 'a', g2: 's', y: 1 },
+  { x: 'a | e', g1: 'a', g2: 'p', y: 1 },
 ];
 
 /** @internal */
