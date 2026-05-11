@@ -59,10 +59,10 @@ export const BARCHART_1Y1G_LINEAR = [
 
 /** @internal */
 export const BARCHART_1Y2G = [
-  { x: 'a | b', g1: 'a', g2: 's', y: 1 },
-  { x: 'a | c', g1: 'a', g2: 'p', y: 1 },
-  { x: 'a | d', g1: 'a', g2: 's', y: 1 },
-  { x: 'a | e', g1: 'a', g2: 'p', y: 1 },
+  { x: 'term › b', g1: 'a', g2: 's', y: 1 },
+  { x: 'term › c', g1: 'a', g2: 'p', y: 1 },
+  { x: 'term › d', g1: 'a', g2: 's', y: 1 },
+  { x: 'term › e', g1: 'a', g2: 'p', y: 1 },
 ];
 
 /** @internal */

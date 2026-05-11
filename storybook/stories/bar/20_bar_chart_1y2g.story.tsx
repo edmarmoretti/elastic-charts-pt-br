@@ -22,7 +22,7 @@ export const Example: ChartsStory = (_, { title, description }) => (
       legendPosition={Position.Right}
       baseTheme={useBaseTheme()}
     />
-    <Axis id="bottom" position={Position.Bottom}  showOverlappingTicks />
+    <Axis id="bottom" title="" position={Position.Bottom}  showOverlappingTicks />
     <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d: any) => Number(d).toFixed(2)} />
 
     <BarSeries

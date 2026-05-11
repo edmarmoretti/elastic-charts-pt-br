@@ -53,9 +53,12 @@ export function renderTitle(
   }: TitleProps,
   locale: string,
 ) {
+  console.log(panelTitle);
+
   const { position, hide: hideAxis, title, timeAxisLayerCount } = axisSpec;
-  const titleFromAxis = !panel && !title ? ticks?.[0]?.axisTitle : undefined;
-  const titleToRender = panel ? panelTitle : title || titleFromAxis;
+  //Edmar Moretti - se não tiver título, tenta pegar o título do primeiro tick
+  const titleFromAxis = !panel && (!title || title == " ") ? ticks?.[0]?.axisTitle : undefined;
+  const titleToRender = (panel ? panelTitle : title || titleFromAxis) == " " ? titleFromAxis : panel ? panelTitle : title || titleFromAxis;
   const axisTitleToUse = panel ? axisPanelTitle : axisTitle;
   if (!titleToRender || !axisTitleToUse.visible) {
     return;

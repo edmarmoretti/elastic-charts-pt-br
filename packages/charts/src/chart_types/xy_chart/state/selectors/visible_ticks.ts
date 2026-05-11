@@ -320,6 +320,7 @@ function getVisibleTickSets(
     const panel = getPanelSize(smScales);
     return [...joinedAxesData].reduce(
       (acc, [axisId, { axisSpec, axesStyle, gridLine, isXAxis, labelFormatter: userProvidedLabelFormatter }]) => {
+        //console.log('getVisibleTickSets', { axisId, axisSpec, axesStyle, gridLine, isXAxis, userProvidedLabelFormatter });
         const { groupId, integersOnly, maximumFractionDigits: mfd, timeAxisLayerCount } = axisSpec;
         const yDomain = yDomains.find((yd) => yd.groupId === groupId);
         const domain = isXAxis ? xDomain : yDomain;
@@ -343,8 +344,7 @@ function getVisibleTickSets(
 
           const labelBox = getLabelBox(axesStyle, ticks, labelFormatter, textMeasure, axisSpec, gridLine);
           //Edmar Moretti - verifica se o eixo das categorias contém termos repetidos e define o título baseado nisso
-          //console.log(scale);
-          //console.log(axisSpec);
+
           const t = getVisibleTickSet(
               scale,
               labelBox,
@@ -361,31 +361,33 @@ function getVisibleTickSets(
               showGrid,
               axisTitle,
             );          
-          
+          var cabecalho = "";
           if(scale.type === "ordinal" && typeof scale.domain[0] === 'string' && scale.domain[0].includes(SERIES_DELIMITER)){
-            var cabecalho = "";
             t.forEach(d => {
               if(typeof d.label === 'string'){
                 d.label = d.label.replace(SERIES_DELIMITER,' › ');
                 d.value = d.label;
                 d.domainClampedValue = d.label;
-                if(cabecalho === ""){
-                  cabecalho = d.label.split(' › ').slice(0, -1).join(' › ');
+                if(cabecalho == ""){
+                  cabecalho = d.value.split(' › ').slice(0, -1).join(' › ');
                 } else {
                   if(cabecalho != d.label.split(' › ').slice(0, -1).join(' › ')){
-                    cabecalho = '';
+                    cabecalho = "";
                   }
                 }
               }
             });
+            //Agora que descobriu qual deve ser o título, altera os ticks para remover o prefixo repetido
             if(cabecalho != ""){
               t.forEach(d => {
                 if(typeof d.label === 'string'){
                   d.label = d.label.split(' › ').slice(-1)[0]!;
                 }
+                //console.log(cabecalho)
                 d.axisTitle = cabecalho;
               });
             }
+            
           }
 
 
