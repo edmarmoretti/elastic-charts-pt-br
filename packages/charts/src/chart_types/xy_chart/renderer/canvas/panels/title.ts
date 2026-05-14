@@ -53,7 +53,7 @@ export function renderTitle(
   }: TitleProps,
   locale: string,
 ) {
-  console.log(panelTitle);
+ 
 
   const { position, hide: hideAxis, title, timeAxisLayerCount } = axisSpec;
   //Edmar Moretti - se não tiver título, tenta pegar o título do primeiro tick
