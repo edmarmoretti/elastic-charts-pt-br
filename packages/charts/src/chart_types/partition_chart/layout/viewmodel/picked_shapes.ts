@@ -117,7 +117,7 @@ export function pickShapesTooltipValues(
       }),
   };
 }
-
+//Edmar Moretti - remove o valor do percentual do tooltip, pois ele não é necessário e está causando confusão para o usuário
 function getTooltipValueFromNode(
   node: ArrayNode,
   labelFormatters: (LabelAccessor | undefined)[],
@@ -149,7 +149,7 @@ function getTooltipValueFromNode(
       key: model?.dataName ?? '',
     },
     value: node[AGGREGATE_KEY],
-    formattedValue: `${valueFormatter(value)}\u00A0(${percentFormatter(percentValueGetter(node))})`,
+    formattedValue: `${valueFormatter(value)}`,
     valueAccessor: node[DEPTH_KEY],
   };
 }
