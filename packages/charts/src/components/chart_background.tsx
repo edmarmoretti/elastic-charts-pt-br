@@ -22,9 +22,10 @@ interface ChartBackgroundProps {
 export class ChartBackgroundComponent extends React.Component<ChartBackgroundProps> {
   static displayName = 'ChartBackground';
 
+  //Edmar Moretti - remove o background dos gráficos definido diretamente no echarts, para que o background seja definido pelo painel do Kibana
   render() {
     const { backgroundColor } = this.props;
-    return <div className="echChartBackground" style={{ backgroundColor }} />;
+    return <div className="echChartBackground" />;
   }
 }
 
