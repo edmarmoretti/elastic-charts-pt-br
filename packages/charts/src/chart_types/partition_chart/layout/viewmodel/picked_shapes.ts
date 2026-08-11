@@ -13,7 +13,7 @@ import type { LabelAccessor, ValueFormatter } from '../../../../utils/common';
 import type { SpecId } from '../../../../utils/ids';
 import type { Point } from '../../../../utils/point';
 import type { ContinuousDomainFocus } from '../../renderer/canvas/partition';
-import { MODEL_KEY, percentValueGetter } from '../config';
+import { MODEL_KEY } from '../config';
 import type { QuadViewModel, ShapeViewModel } from '../types/viewmodel_types';
 import type { ArrayNode } from '../utils/group_by_rollup';
 import {

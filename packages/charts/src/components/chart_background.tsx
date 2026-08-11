@@ -24,7 +24,7 @@ export class ChartBackgroundComponent extends React.Component<ChartBackgroundPro
 
   //Edmar Moretti - remove o background dos gráficos definido diretamente no echarts, para que o background seja definido pelo painel do Kibana
   render() {
-    const { backgroundColor } = this.props;
+    //const { backgroundColor } = this.props;
     return <div className="echChartBackground" />;
   }
 }
